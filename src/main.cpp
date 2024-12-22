@@ -677,31 +677,64 @@ void LoadFromTextFile(Student people[], int &count) {
 
 
 void SaveToBinaryFile(const Student people[], int count) {
-
-    std::ofstream fout("../data/students.bin", std::ios::binary);
+    std::ofstream fout("../data/students.bin", std::ios::out | std::ios::binary);
     if (!fout) {
         std::cout << "\033[1;33mОшибка при открытии файла для записи.\033[0m\n";
         return;
     }
 
-    fout.write(reinterpret_cast<const char*>(people), count * sizeof(Student));
+    for (int i = 0; i < count; ++i) {
+        // Записываем каждое поле поочередно
+        fout.write(people[i].lastName, sizeof(people[i].lastName));
+        fout.write(people[i].firstName, sizeof(people[i].firstName));
+        fout.write(people[i].patronymic, sizeof(people[i].patronymic));
+        
+        // Записываем значения birthYear, course, id как отдельные элементы
+        fout.write((char*)&people[i].birthYear, sizeof(people[i].birthYear));
+        fout.write((char*)&people[i].course, sizeof(people[i].course));
+        fout.write((char*)&people[i].id, sizeof(people[i].id));
+
+        // Записываем массив оценок
+        for (int j = 0; j < 5; ++j) {
+            fout.write((char*)&people[i].marks[j], sizeof(people[i].marks[j]));
+        }
+    }
+
     fout.close();
     std::cout << "Данные успешно сохранены в бинарный файл.\n";
 }
 
-
-void LoadFromBinaryFile(Student people[], int &count) {
-
-    std::ifstream fin("../data/students.bin", std::ios::binary);
+void LoadFromBinaryFile(Student people[], int& count) {
+    std::ifstream fin("../data/students.bin", std::ios::in | std::ios::binary);
     if (!fin) {
         std::cout << "\033[1;33mОшибка при открытии файла для чтения.\033[0m\n";
         return;
     }
 
     count = 0;
-    while (fin.read(reinterpret_cast<char*>(&people[count]), sizeof(Student))) {
-        ++count;
+    while (true) {
+        Student temp;
+
+        // Читаем каждое поле поочередно
+        fin.read(temp.lastName, sizeof(temp.lastName));
+        if (fin.eof()) break;  // Проверка конца файла
+
+        fin.read(temp.firstName, sizeof(temp.firstName));
+        fin.read(temp.patronymic, sizeof(temp.patronymic));
+
+        // Читаем значения birthYear, course, id как отдельные элементы
+        fin.read((char*)&temp.birthYear, sizeof(temp.birthYear));
+        fin.read((char*)&temp.course, sizeof(temp.course));
+        fin.read((char*)&temp.id, sizeof(temp.id));
+
+        // Читаем оценки
+        for (int i = 0; i < 5; ++i) {
+            fin.read((char*)&temp.marks[i], sizeof(temp.marks[i]));
+        }
+
+        people[count++] = temp;
     }
+
     fin.close();
     std::cout << "Данные успешно загружены из бинарного файла.\n";
 }
