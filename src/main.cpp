@@ -36,7 +36,7 @@ int getlength(const char* word);
 void PrintTable(const Student people[], int count);
 
 //прототипы функций для работы со студентами
-void AddStudentManual(Student people[], int &count, int size);
+void AddStudentManual(Student people[], int &count);
 void ChangeStudentInfo(Student people[], int count);
 void DeleteStudent(Student people[], int &count);
 void SortedAvgMarks(const Student people[], int count);
@@ -215,18 +215,20 @@ void clearScreen() {
     std::cout << "\033[H\033[J"; 
 }
 
-bool getValidMarks(const char* input, int marks[], int size) {
+void getValidMarks(int marks[], int size) {
+
+    char input[100];
+    std::cin.getline(input, sizeof(input));
+
     int index = 0;
-    char buffer[100];
-    std::strncpy(buffer, input, sizeof(buffer) - 1);
-    buffer[sizeof(buffer) - 1] = '\0';
+    char* token = strtok(input, " ");
 
-    char* token = strtok(buffer, " ");
+    while (token != nullptr && index < size) {
 
-    while (token != nullptr) {
-        if (index >= size) {
-            std::cout << "\nОшибка: \n\033[1;33mВведено слишком много оценок. Повторите ввод...\033[0m\n";
-            return false;
+        if (token[0] == ' ') {
+            std::cout << "\nОшибка: \n\033[1;33mПеред цифрами не должно быть пробелов. Повторите ввод...\033[0m\n";
+            getValidMarks(marks, size); 
+            return;
         }
 
         char* endPtr;
@@ -234,19 +236,18 @@ bool getValidMarks(const char* input, int marks[], int size) {
 
         if (*endPtr != '\0' || mark < 0 || mark > 5) {
             std::cout << "\nОшибка: \n\033[1;33mОценка должна быть числом от 0 до 5. Повторите ввод...\033[0m\n";
-            return false;
+            getValidMarks(marks, size); 
         }
 
         marks[index++] = mark;
         token = strtok(nullptr, " ");
     }
 
-    if (index != size) {
-        std::cout << "\nОшибка: \n\033[1;33mВведено недостаточное количество оценок. Повторите ввод...\033[0m\n";
-        return false;
-    }
-
-    return true;
+    if (index < 5) {  
+        getValidMarks(marks, size); 
+        return;
+      
+    } 
 }
 
 int getValidYear() {
@@ -369,59 +370,55 @@ void PrintTable(const Student people[], int count) {
     }
 }
 
-void AddStudentManual(Student people[], int& count) {
+void AddStudentManual(Student people[], int &count) {
+
     if (count >= 100) {
         std::cout << "\n\033[1;33mНевозможно добавить больше студентов.\033[0m\n";
         return;
     }
 
     Student newStudent;
-    newStudent.id = count + 1;
+    newStudent.id = count + 1; 
 
     clearScreen();
     PrintTable(&newStudent, 1);
-    std::cout << "Введите фамилию: ";
+    std::cout << "\nВведите фамилию: ";
     std::cin >> newStudent.lastName;
 
     clearScreen();
     PrintTable(&newStudent, 1);
-    std::cout << "Введите имя: ";
+    std::cout << "\nВведите имя: ";
     std::cin >> newStudent.firstName;
 
     clearScreen();
     PrintTable(&newStudent, 1);
-    std::cout << "Введите отчество: ";
+    std::cout << "\nВведите отчество: ";
     std::cin >> newStudent.patronymic;
 
     clearScreen();
     PrintTable(&newStudent, 1);
-    std::cout << "Введите год рождения: ";
-    newStudent.birthYear = getValidYear();
+    std::cout << "\nВведите год рождения: ";
+    newStudent.birthYear = getValidYear(); 
 
     clearScreen();
     PrintTable(&newStudent, 1);
-    std::cout << "Введите курс: ";
+    std::cout << "\nВведите курс: ";
     while (!(std::cin >> newStudent.course) || (std::cin.peek() != '\n')) {
         std::cin.clear();
         while (std::cin.get() != '\n');
         clearScreen();
         PrintTable(&newStudent, 1);
-        std::cout << "\nОшибка: \n\033[1;33mВведите цифру курса цифрой...\033[0m\n";
+        std::cout << "\nОшибка: \n\033[1;33mвведите цифру курса цифрой...\033[0m\n";
         std::cout << "Введите курс: ";
     }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Очищаем буфер ввода
 
     clearScreen();
     PrintTable(&newStudent, 1);
-    while (true) {
-        std::cout << "Введите 5 оценок через пробел: ";
-        char input[100];
-        std::cin.getline(input, sizeof(input));
+    std::cout << "\nВведите 5 оценок через пробел: ";
+    getValidMarks(newStudent.marks, 5);
 
-        if (getValidMarks(input, newStudent.marks, 5)) {
-            break; // Выход из цикла при корректном вводе
-        }
-    }
+    clearScreen();
+    PrintTable(&newStudent, 1);
 
     people[count] = newStudent;
     count++;
@@ -429,7 +426,6 @@ void AddStudentManual(Student people[], int& count) {
     char continueChoice;
     std::cout << "\nДобавить еще одного студента? (+/-): ";
     std::cin >> continueChoice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Очищаем буфер ввода
 
     if (continueChoice == '+' || continueChoice == '=') {
         AddStudentManual(people, count);
