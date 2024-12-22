@@ -559,6 +559,7 @@ void ChangeStudentInfo(Student people[], int count) {
 }
 
 void DeleteStudent(Student people[], int &count) {
+    
     if (count == 0) {
         std::cout << "Ошибка: \n\033[1;33mНет студентов для удаления. Пожалуйста подождите...\033[0m\n";
         std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -595,6 +596,7 @@ void DeleteStudent(Student people[], int &count) {
 }
 
 void SortedAvgMarks(const Student people[], int count) {
+    
     Student peopleCopy[100];
 
     for (int i = 0; i < count; ++i) {
@@ -677,6 +679,7 @@ void LoadFromTextFile(Student people[], int &count) {
 
 
 void SaveToBinaryFile(const Student people[], int count) {
+    
     std::ofstream fout("../data/students.bin", std::ios::out | std::ios::binary);
     if (!fout) {
         std::cout << "\033[1;33mОшибка при открытии файла для записи.\033[0m\n";
@@ -703,6 +706,7 @@ void SaveToBinaryFile(const Student people[], int count) {
 }
 
 void LoadFromBinaryFile(Student people[], int& count) {
+    
     std::ifstream fin("../data/students.bin", std::ios::in | std::ios::binary);
     if (!fin) {
         std::cout << "\033[1;33mОшибка при открытии файла для чтения.\033[0m\n";
