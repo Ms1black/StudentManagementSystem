@@ -433,8 +433,14 @@ void AddStudentManual(Student people[], int &count) {
 
     clearScreen();
     PrintTable(&newStudent, 1);
-    std::cout << "Введите 5 оценок через пробел: ";
-    getValidMarks(newStudent.marks, 5);
+     while (true) {
+        std::cout << "Введите 5 оценок через пробел: ";
+        std::cin.getline(input, sizeof(input));
+
+        if (getValidMarks(input, marks, size)) {
+            break;  // Выход из цикла при корректном вводе
+        }
+    }
 
     people[count] = newStudent;
     count++;
