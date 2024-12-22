@@ -8,32 +8,33 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04  # Используем доступную версию Ubuntu
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4  # Клонирование репозитория
 
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y build-essential
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential  # Устанавливаем build-essential для компиляции
 
     - name: Build the project
       run: |
-        cd src
-        make
+        cd src  # Переход в папку src
+        make  # Компиляция проекта с помощью Makefile в src
 
     - name: Run the program
       run: |
-        cd src
-        ./main
+        cd src  # Переход в папку src
+        ./main  # Запуск скомпилированной программы
 
     - name: Run make check
       run: |
-        cd src
-        make check
+        cd src  # Переход в папку src
+        make check  # Запуск проверки, если make check доступен
 
     - name: Run make distcheck
       run: |
-        cd src
-        make distcheck
+        cd src  # Переход в папку src
+        make distcheck  # Запуск distcheck, если он доступен
