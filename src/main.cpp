@@ -369,15 +369,14 @@ void PrintTable(const Student people[], int count) {
     }
 }
 
-void AddStudentManual(Student people[], int &count) {
-
+void AddStudentManual(Student people[], int& count) {
     if (count >= 100) {
         std::cout << "\n\033[1;33mНевозможно добавить больше студентов.\033[0m\n";
         return;
     }
 
     Student newStudent;
-    newStudent.id = count + 1; 
+    newStudent.id = count + 1;
 
     clearScreen();
     PrintTable(&newStudent, 1);
@@ -397,7 +396,7 @@ void AddStudentManual(Student people[], int &count) {
     clearScreen();
     PrintTable(&newStudent, 1);
     std::cout << "Введите год рождения: ";
-    newStudent.birthYear = getValidYear(); 
+    newStudent.birthYear = getValidYear();
 
     clearScreen();
     PrintTable(&newStudent, 1);
@@ -407,18 +406,20 @@ void AddStudentManual(Student people[], int &count) {
         while (std::cin.get() != '\n');
         clearScreen();
         PrintTable(&newStudent, 1);
-        std::cout << "\nОшибка: \n\033[1;33mвведите цифру курса цифрой...\033[0m\n";
+        std::cout << "\nОшибка: \n\033[1;33mВведите цифру курса цифрой...\033[0m\n";
         std::cout << "Введите курс: ";
     }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Очищаем буфер ввода
 
     clearScreen();
     PrintTable(&newStudent, 1);
-     while (true) {
+    while (true) {
         std::cout << "Введите 5 оценок через пробел: ";
+        char input[100];
         std::cin.getline(input, sizeof(input));
 
-        if (getValidMarks(input, marks, size)) {
-            break;  // Выход из цикла при корректном вводе
+        if (getValidMarks(input, newStudent.marks, 5)) {
+            break; // Выход из цикла при корректном вводе
         }
     }
 
@@ -428,6 +429,7 @@ void AddStudentManual(Student people[], int &count) {
     char continueChoice;
     std::cout << "\nДобавить еще одного студента? (+/-): ";
     std::cin >> continueChoice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Очищаем буфер ввода
 
     if (continueChoice == '+' || continueChoice == '=') {
         AddStudentManual(people, count);
