@@ -36,7 +36,7 @@ int getlength(const char* word);
 void PrintTable(const Student people[], int count);
 
 //прототипы функций для работы со студентами
-void AddStudentManual(Student people[], int &count);
+void AddStudentManual(Student people[], int &count, int size);
 void ChangeStudentInfo(Student people[], int count);
 void DeleteStudent(Student people[], int &count);
 void SortedAvgMarks(const Student people[], int count);
@@ -215,58 +215,38 @@ void clearScreen() {
     std::cout << "\033[H\033[J"; 
 }
 
-void getValidMarks(int marks[], int size) {
-    while (true) {
-        std::cout << "Введите " << size << " оценок (через пробел, от 0 до 5): ";
-        char input[100];
-        std::cin.getline(input, sizeof(input));
+bool getValidMarks(const char* input, int marks[], int size) {
+    int index = 0;
+    char buffer[100];
+    std::strncpy(buffer, input, sizeof(buffer) - 1);
+    buffer[sizeof(buffer) - 1] = '\0';
 
-        int index = 0;
-        char* token = strtok(input, " ");
+    char* token = strtok(buffer, " ");
 
-        bool hasError = false;
-
-        while (token != nullptr) {
-            if (index >= size) {
-                hasError = true;
-                break;
-            }
-
-            // Проверка на начальный пробел
-            if (token[0] == ' ') {
-                std::cout << "\nОшибка: \n\033[1;33mПеред цифрами не должно быть пробелов. Повторите ввод...\033[0m\n";
-                hasError = true;
-                break;
-            }
-
-            // Преобразование строки в число
-            char* endPtr;
-            int mark = std::strtol(token, &endPtr, 10);
-
-            if (*endPtr != '\0' || mark < 0 || mark > 5) {
-                std::cout << "\nОшибка: \n\033[1;33mОценка должна быть числом от 0 до 5. Повторите ввод...\033[0m\n";
-                hasError = true;
-                break;
-            }
-
-            // Запись оценки
-            marks[index++] = mark;
-
-            // Переход к следующему токену
-            token = strtok(nullptr, " ");
+    while (token != nullptr) {
+        if (index >= size) {
+            std::cout << "\nОшибка: \n\033[1;33mВведено слишком много оценок. Повторите ввод...\033[0m\n";
+            return false;
         }
 
-        // Проверка на количество оценок
-        if (!hasError && index != size) {
-            std::cout << "\nОшибка: \n\033[1;33mВведено неправильное количество оценок. Повторите ввод...\033[0m\n";
-            hasError = true;
+        char* endPtr;
+        int mark = std::strtol(token, &endPtr, 10);
+
+        if (*endPtr != '\0' || mark < 0 || mark > 5) {
+            std::cout << "\nОшибка: \n\033[1;33mОценка должна быть числом от 0 до 5. Повторите ввод...\033[0m\n";
+            return false;
         }
 
-        // Если ошибок нет, завершаем ввод
-        if (!hasError) {
-            return;
-        }
+        marks[index++] = mark;
+        token = strtok(nullptr, " ");
     }
+
+    if (index != size) {
+        std::cout << "\nОшибка: \n\033[1;33mВведено недостаточное количество оценок. Повторите ввод...\033[0m\n";
+        return false;
+    }
+
+    return true;
 }
 
 int getValidYear() {
