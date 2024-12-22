@@ -408,7 +408,7 @@ void AddStudentManual(Student people[], int &count) {
         while (std::cin.get() != '\n');
         clearScreen();
         PrintTable(&newStudent, 1);
-        std::cout << "\nОшибка: \n\033[1;33mвведите цифру курса цифрой...\033[0m\n";
+        std::cout << "\nОшибка: \n\033[1;33mВведите цифру курса цифрой...\033[0m\n";
         std::cout << "Введите курс: ";
     }
 
@@ -684,17 +684,15 @@ void SaveToBinaryFile(const Student people[], int count) {
     }
 
     for (int i = 0; i < count; ++i) {
-        // Записываем каждое поле поочередно
+
         fout.write(people[i].lastName, sizeof(people[i].lastName));
         fout.write(people[i].firstName, sizeof(people[i].firstName));
         fout.write(people[i].patronymic, sizeof(people[i].patronymic));
         
-        // Записываем значения birthYear, course, id как отдельные элементы
         fout.write((char*)&people[i].birthYear, sizeof(people[i].birthYear));
         fout.write((char*)&people[i].course, sizeof(people[i].course));
         fout.write((char*)&people[i].id, sizeof(people[i].id));
 
-        // Записываем массив оценок
         for (int j = 0; j < 5; ++j) {
             fout.write((char*)&people[i].marks[j], sizeof(people[i].marks[j]));
         }
@@ -715,19 +713,16 @@ void LoadFromBinaryFile(Student people[], int& count) {
     while (true) {
         Student temp;
 
-        // Читаем каждое поле поочередно
         fin.read(temp.lastName, sizeof(temp.lastName));
-        if (fin.eof()) break;  // Проверка конца файла
+        if (fin.eof()) break; 
 
         fin.read(temp.firstName, sizeof(temp.firstName));
         fin.read(temp.patronymic, sizeof(temp.patronymic));
 
-        // Читаем значения birthYear, course, id как отдельные элементы
         fin.read((char*)&temp.birthYear, sizeof(temp.birthYear));
         fin.read((char*)&temp.course, sizeof(temp.course));
         fin.read((char*)&temp.id, sizeof(temp.id));
 
-        // Читаем оценки
         for (int i = 0; i < 5; ++i) {
             fin.read((char*)&temp.marks[i], sizeof(temp.marks[i]));
         }
