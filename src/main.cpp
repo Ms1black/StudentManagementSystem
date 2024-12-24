@@ -239,18 +239,15 @@ void getValidMarks(int marks[], int size) {
         }
 
         if (!isValidNumber) {
-            std::cout << "\nОшибка: \n\033[1;33mОценка должна быть числом от 0 до 5. Повторите ввод...\033[0m\n";
             getValidMarks(marks, size);
             return;
         }
 
-        // Преобразуем строку в число
         int mark = 0;
         for (int i = 0; token[i] != '\0'; ++i) {
             mark = mark * 10 + (token[i] - '0');
         }
 
-        // Проверка на диапазон от 0 до 5
         if (mark < 0 || mark > 5) {
             std::cout << "\nОшибка: \n\033[1;33mОценка должна быть числом от 0 до 5. Повторите ввод...\033[0m\n";
             getValidMarks(marks, size); 
@@ -262,7 +259,6 @@ void getValidMarks(int marks[], int size) {
     }
 
     if (index < size) {  
-        std::cout << "\nОшибка: \n\033[1;33mНеобходимо ввести ровно " << size << " оценок. Повторите ввод...\033[0m\n";
         getValidMarks(marks, size); 
         return;
     }
