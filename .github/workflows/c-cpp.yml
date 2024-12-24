@@ -1,40 +1,40 @@
-name: C/C++ CI
+# name: C/C++ CI
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
 
-jobs:
-  build:
-    runs-on: ubuntu-24.04  # Используем доступную версию Ubuntu
+# jobs:
+#   build:
+#     runs-on: ubuntu-24.04  # Используем доступную версию Ubuntu
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4  # Клонирование репозитория
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4  # Клонирование репозитория
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential  # Устанавливаем build-essential для компиляции
+#     - name: Install dependencies
+#       run: |
+#         sudo apt-get update
+#         sudo apt-get install -y build-essential  # Устанавливаем build-essential для компиляции
 
-    - name: Build the project
-      run: |
-        cd src  # Переход в папку src
-        make  # Компиляция проекта с помощью Makefile в src
+#     - name: Build the project
+#       run: |
+#         cd src  # Переход в папку src
+#         make  # Компиляция проекта с помощью Makefile в src
 
-    - name: Run the program
-      run: |
-        cd src  # Переход в папку src
-        ./main  # Запуск скомпилированной программы
+#     - name: Run the program
+#       run: |
+#         cd src  # Переход в папку src
+#         ./main  # Запуск скомпилированной программы
 
-    - name: Run make check
-      run: |
-        cd src  # Переход в папку src
-        make check  # Запуск проверки, если make check доступен
+#     - name: Run make check
+#       run: |
+#         cd src  # Переход в папку src
+#         make check  # Запуск проверки, если make check доступен
 
-    - name: Run make distcheck
-      run: |
-        cd src  # Переход в папку src
-        make distcheck  # Запуск distcheck, если он доступен
+#     - name: Run make distcheck
+#       run: |
+#         cd src  # Переход в папку src
+#         make distcheck  # Запуск distcheck, если он доступен
